@@ -1,6 +1,7 @@
 const express = require("express");
 //const cookieParser = require("cookie-parser");
 const expressSession = require("express-session");
+const connectFlash = require("connect-flash");
 const path = require("path");
 const app = express();
 
@@ -11,14 +12,13 @@ app.use(express.urlencoded({extended:false}));
 app.use(expressSession({
     secret: "my_secret"
 }));
+app.use(connectFlash());
 
 app.get('/', (req, res)=>{
     let profile = {
-        user: req.session.user,
-        password: req.session.password
+        user: req.flash("user")[0],
+        password: req.flash("password")[0]
     }
-    delete req.session.user;
-    delete req.session.password;
     res.render('index', {profile:profile})
 })
 
@@ -27,8 +27,9 @@ app.get('/login', (req, res)=>{
 })
 
 app.post('/login', (req, res)=>{
-    req.session.user = req.body.user;
-    req.session.password = req.body.password;
+    // create the session values
+    req.flash("user", req.body.user);
+    req.flash("password", req.body.password);
     res.redirect("/");
 })
 
