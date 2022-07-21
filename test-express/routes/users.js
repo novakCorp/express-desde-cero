@@ -8,22 +8,27 @@ const users = [
 ];
 
 router.get("/users", (req, res) => {
-    res.status(200).json(users);
+    res.status(200).json('Listando usuarios');
 });
 
 router.get("/user/:id", (req, res) => {
     const param = req.params.id;
-    users.forEach((user) => {
-        if(param == user.id) {
-            res.status(200).json("User found");
-        }
-    });
-    res.status(404).json("User not found");
+    if (param == users[0].id) {
+        res.status(200).json('User found');
+    }
+    else {
+        res.status(404).json('User not found');
+    }
 });
 
 router.post("/create-user", (req, res) => {
-    users.push(req.body);
-    res.redirect("/users");
+    if (req.body.id != 1) {
+        users.push(req.body);
+        res.status(200).json('Usuario registrado');
+    }
+    else {
+        res.status(500).json('Error al registrar');
+    }
 });
 
 module.exports = router;
